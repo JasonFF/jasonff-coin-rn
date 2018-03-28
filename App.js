@@ -1,23 +1,62 @@
+/**
+ * @flow
+ */
+
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StatusBar,Text } from 'react-native';
+import {
+  StackNavigator,
+  TabNavigator,
+} from 'react-navigation';
 
-export default class App extends React.Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text>Open up App.js to start working on your app!</Text>
-        <Text>Changes you make will automatically reload.</Text>
-        <Text>Shake your phone to open the developer menu.</Text>
-      </View>
-    );
-  }
-}
+import Home from './src/containers/Home'
+import Page1 from './src/containers/Page1'
+import Welcome from './src/containers/Welcome'
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+
+const TabNav = TabNavigator(
+  {
+    Home: {
+      screen: Home,
+      path: '/',
+      navigationOptions: {
+        header: null
+      },
+    },
+    SettingsTab: {
+      screen: Page1,
+      path: '/settings',
+      navigationOptions: {
+        header: null
+      },
+    },
   },
+  {
+    tabBarPosition: 'bottom',
+    animationEnabled: true,
+    swipeEnabled: false,
+  }
+);
+
+const StacksOverTabs = StackNavigator({
+  Root: {
+    screen: TabNav,
+  },
+  Welcome: {
+    screen: Welcome,
+    navigationOptions: {
+      header: null,
+    },
+  },
+  Profile: {
+    screen: Page1,
+    path: '/people/:name',
+    navigationOptions: ({ navigation }) => {
+      title: `${navigation.state.params.name}'s Profile!`;
+    },
+  },
+},{
+  initialRouteName: 'Welcome'
 });
+
+export default StacksOverTabs;
