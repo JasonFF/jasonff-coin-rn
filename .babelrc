@@ -1,11 +1,3 @@
 {
-  "presets": ["babel-preset-expo"],
-  "plugins": [
-    ["import", { "libraryName": "antd-mobile" }]
-  ],
-  "env": {
-    "development": {
-      "plugins": ["transform-react-jsx-source"]
-    }
-  }
+  "presets": ["react-native"]
 }
