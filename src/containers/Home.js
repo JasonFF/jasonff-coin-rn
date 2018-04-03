@@ -1,29 +1,172 @@
 import React from 'react'
-import {Flex, WhiteSpace, WingBlank} from 'antd-mobile';
-import {View, Text} from 'react-native'
-// import fetch from 'fetch'
-
+import {
+  Container,
+  Text,
+  List,
+  ListItem,
+  Button,
+  Row,
+  Title,
+  Header,
+  Body
+} from 'native-base'
+import action from '../utils/fetch'
+import {Grid, Col} from 'react-native-easy-grid'
+const PAGE = 6
+const LEVEL = 0.03
 export default class Home extends React.Component {
+  construtor() {
+    this.fetchData = this
+      .fetchData
+      .bind(this)
+    this.fetchHuobiDataBuy = this
+      .fetchHuobiDataBuy
+      .bind(this)
+    this.fetchHuobiDataSell = this
+      .fetchHuobiDataSell
+      .bind(this)
+  }
   componentWillMount() {
-    this.setState({
-      data: '1'
-    })
-    fetch("https://otc-api.huobipro.com/v1/otc/trade/list/public?coinId=2&tradeType=0&currentPage=1&payWay=&country=&merchant=1&online=1&range=0").then((res)=>{
+    this.setState({buyData: [], sellData: [], fetching1: false, fetching2: false})
+    // this.fetchData()
+  }
+  fetchHuobiDataBuy(page = 1, maxPage) {
+    this.setState({fetching1: true})
+    return action({
+      url: 'https://otc-api.huobipro.com/v1/otc/trade/list/public',
+      params: {
+        coinId: 2,
+        tradeType: 1,
+        currentPage: page,
+        merchant: 1,
+        online: 1,
+        range: 0,
+        currPage: page
+      }
+    }).then(res => {
       this.setState({
-        data: res
+        buyData: this
+          .state
+          .buyData
+          .concat(res.data)
       })
-      console.log(res.json())
+      if (res.data.length == 10 && res.data[9].fixedPrice < this.state.buyData[0].fixedPrice / 1 + LEVEL) {
+        this.fetchHuobiDataBuy(page + 1, maxPage)
+      } else {
+        this.setState({fetching1: false})
+      }
     })
   }
+  fetchHuobiDataSell(page = 1, maxPage) {
+    this.setState({fetching2: true})
+    return action({
+      url: 'https://otc-api.huobipro.com/v1/otc/trade/list/public',
+      params: {
+        coinId: 2,
+        tradeType: 0,
+        currentPage: page,
+        merchant: 1,
+        online: 1,
+        range: 0,
+        currPage: page
+      }
+    }).then(res => {
+      this.setState({
+        sellData: this
+          .state
+          .sellData
+          .concat(res.data)
+      })
+      if (res.data.length == 10 && res.data[9].fixedPrice > this.state.sellData[0].fixedPrice / 1 - LEVEL) {
+        this.fetchHuobiDataSell(page + 1, maxPage)
+      } else {
+        this.setState({fetching2: false})
+      }
+    })
+  }
+  fetchData() {
+    this.fetchHuobiDataBuy(1, PAGE)
+    this.fetchHuobiDataSell(1, PAGE)
+  }
+  updateData() {
+    if (this.state.fetching1 || this.state.fetching2) {
+      return alert('正在获取中')
+    }
+    this.setState({buyData: [], sellData: []})
+    this.fetchData()
+  }
   render() {
+    let buyList = []
+    let sellList = []
+    let buyListData = {}
+    let sellListData = {}
+    const {buyData, sellData} = this.state
+    buyData.forEach(it => {
+      if (buyListData[it.fixedPrice]) {
+        buyListData[it.fixedPrice].push(it)
+      } else {
+        buyListData[it.fixedPrice] = [it]
+      }
+    })
+    sellData.forEach(it => {
+      if (sellListData[it.fixedPrice]) {
+        sellListData[it.fixedPrice].push(it)
+      } else {
+        sellListData[it.fixedPrice] = [it]
+      }
+    })
+    Object
+      .keys(buyListData)
+      .forEach(it => {
+        buyList.push({price: it, data: buyListData[it]})
+      })
+    Object
+      .keys(sellListData)
+      .forEach(it => {
+        sellList.push({price: it, data: sellListData[it]})
+      })
+    console.log(buyList, sellList)
     return (
-      <View>
-        <WhiteSpace size="lg" />
-        <WhiteSpace size="lg" />
-        <Flex>
-          <Flex.Item><WingBlank><Text>{JSON.stringify(this.state.data)}</Text></WingBlank></Flex.Item>
-        </Flex>
-      </View>
+      <Container>
+        <Header>
+          <Body>
+            <Title>USTD</Title>
+          </Body>
+        </Header>
+        <Grid>
+          <Row size={75}>
+            <Col>
+              {buyList.map((it, index) => {
+                return (
+                  <ListItem key={index}>
+                    <Text>{it.price}({it.data.length})</Text>
+                  </ListItem>
+                )
+              })}
+            </Col>
+            <Col>
+              {sellList.map((it, index) => {
+                return (
+                  <ListItem key={index}>
+                    <Text>{it.price}({it.data.length})</Text>
+                  </ListItem>
+                )
+              })}
+            </Col>
+          </Row>
+          <Row size={25}>
+            <Col></Col>
+            <Col>
+              <Button block onPress={() => this.updateData()}>
+                <Text>更新数据</Text>
+              </Button>
+            </Col>
+            <Col></Col>
+
+          </Row>
+        </Grid>
+
+      </Container>
     )
   }
 }

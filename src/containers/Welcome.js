@@ -1,28 +1,23 @@
-import React from 'react'
-import {Flex, WhiteSpace, Button} from 'antd-mobile';
-import {View, Text, ImageBackground, Dimensions} from 'react-native'
-import {getWindowSize} from '../utils'
-
-export default class Welcome extends React.Component {
+import React, { Component } from 'react';
+import { Container, Header, Content, Text } from 'native-base';
+import { Col, Row, Grid } from 'react-native-easy-grid';
+import {getWindowSize} from '../utils/utils'
+export default class Welcome extends Component {
   componentDidMount() {
     setTimeout(() => {
       this.props.navigation.replace('Root')
-    }, 2000)
+    }, 2500)
     
   }
   render() {
     return (
-      <View>
-        <ImageBackground resizeMode="cover" style={{
-          width: getWindowSize().width,
-          height: getWindowSize().height
-        }} source={require('../assets/bg.jpg')}>
-          <Flex style={{marginTop: 100}}>
-            <Flex.Item><Text style={{fontSize: 25, textAlign: 'center', color: 'white'}}>Welcome to JasonFF's App</Text></Flex.Item>
-          </Flex>
-        </ImageBackground>
-        
-      </View>
-    )
+      <Container style={{height: getWindowSize().height }}>
+          <Grid>
+            <Row style={{ backgroundColor: '#333'}}>
+              <Text style={{color: '#eee'}}>welcome to JasonFF's app</Text>
+            </Row>
+          </Grid>
+      </Container>
+    );
   }
 }

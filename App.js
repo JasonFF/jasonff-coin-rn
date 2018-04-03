@@ -14,7 +14,7 @@ import Page1 from './src/containers/Page1'
 import Welcome from './src/containers/Welcome'
 
 
-const TabNav = TabNavigator(
+const TabNav = StackNavigator(
   {
     Home: {
       screen: Home,
@@ -56,7 +56,7 @@ const StacksOverTabs = StackNavigator({
     },
   },
 },{
-  initialRouteName: 'Welcome'
+  initialRouteName: 'Root'
 });
 
 export default StacksOverTabs;
