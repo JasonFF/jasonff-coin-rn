@@ -9,38 +9,25 @@ import {
   TabNavigator,
 } from 'react-navigation';
 
-import Home from './src/containers/Home'
-import Page1 from './src/containers/Page1'
+import Usdt from './src/containers/Usdt'
+import Btc from './src/containers/Btc'
 import Welcome from './src/containers/Welcome'
 
 
-const TabNav = StackNavigator(
-  {
-    Home: {
-      screen: Home,
-      path: '/',
-      navigationOptions: {
-        header: null
-      },
-    },
-    SettingsTab: {
-      screen: Page1,
-      path: '/settings',
-      navigationOptions: {
-        header: null
-      },
+const StacksOverTabs = StackNavigator({
+  Usdt: {
+    screen: Usdt,
+    path: '/',
+    navigationOptions: {
+      header: null
     },
   },
-  {
-    tabBarPosition: 'bottom',
-    animationEnabled: true,
-    swipeEnabled: false,
-  }
-);
-
-const StacksOverTabs = StackNavigator({
-  Root: {
-    screen: TabNav,
+  Btc: {
+    screen: Btc,
+    path: '/btc',
+    navigationOptions: {
+      header: null
+    },
   },
   Welcome: {
     screen: Welcome,
@@ -48,15 +35,8 @@ const StacksOverTabs = StackNavigator({
       header: null,
     },
   },
-  Profile: {
-    screen: Page1,
-    path: '/people/:name',
-    navigationOptions: ({ navigation }) => {
-      title: `${navigation.state.params.name}'s Profile!`;
-    },
-  },
 },{
-  initialRouteName: 'Root'
+  initialRouteName: 'Usdt'
 });
 
 export default StacksOverTabs;

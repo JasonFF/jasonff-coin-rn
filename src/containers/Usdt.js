@@ -5,17 +5,27 @@ import {
   List,
   ListItem,
   Button,
-  Row,
   Title,
   Header,
-  Body
+  Body,
+  Left,
+  Right,
+  Footer,
+  FooterTab,
+  Content
 } from 'native-base'
-import {ScrollView} from 'react-native'
+import {ScrollView, StyleSheet} from 'react-native'
 import action from '../utils/fetch'
-import {Grid, Col} from 'react-native-easy-grid'
+import {Grid, Col, Row} from 'react-native-easy-grid'
 const PAGE = 6
 const LEVEL = 0.03
-export default class Home extends React.Component {
+
+const styles = StyleSheet.create({
+  textCenter: {
+    textAlign: 'center'
+  }
+})
+export default class Usdt extends React.Component {
   constructor() {
     super()
     this.fetchData = this
@@ -156,47 +166,75 @@ export default class Home extends React.Component {
     return (
       <Container>
         <Header>
+          <Left/>
           <Body>
-            <Title>USTD</Title>
+            <Title >USDT</Title>
           </Body>
+          <Right />
         </Header>
-        <Grid>
-          <Row size={10}>
-            <Text>火币汇率：{hbhl}</Text>
-          </Row>
-          <Row size={65}>
-            <Col>
-              {buyList.map((it, index) => {
-                return (
-                  <ListItem key={index}>
-                    <Text>{it.price}({it.data.length})</Text>
-                  </ListItem>
-                )
-              })}
-            </Col>
-            <Col>
-              {sellList.map((it, index) => {
-                return (
-                  <ListItem key={index}>
-                    <Text>{it.price}({it.data.length})</Text>
-                  </ListItem>
-                )
-              })}
-            </Col>
-
-          </Row>
-          <Row size={25}>
-            <Col></Col>
-            <Col>
-              <Button block onPress={() => this.updateData()}>
-                <Text>更新数据</Text>
-              </Button>
-            </Col>
-            <Col></Col>
-
-          </Row>
-        </Grid>
-
+        <Content>
+          <Grid>
+            <Row style={{
+              flexDirection:'column',
+              justifyContent:'center',
+              alignItems:'center',
+              paddingTop: 20,
+              paddingBottom: 20
+            }} size={10}>
+              <Text style={{
+                fontSize: 20
+              }}>火币汇率：{hbhl}</Text>
+            </Row>
+            <Row size={65}>
+              <Col>
+                {buyList.map((it, index) => {
+                  return (
+                    <ListItem style={{
+                      flexDirection:'column',
+                      justifyContent:'center',
+                      alignItems:'center',
+                    }} key={index}>
+                      <Text>{it.price}({it.data.length})</Text>
+                    </ListItem>
+                  )
+                })}
+              </Col>
+              <Col>
+                {sellList.map((it, index) => {
+                  return (
+                    <ListItem style={{
+                      flexDirection:'column',
+                      justifyContent:'center',
+                      alignItems:'center',
+                    }} key={index}>
+                      <Text>{it.price}({it.data.length})</Text>
+                    </ListItem>
+                  )
+                })}
+              </Col>
+            </Row>
+            <Row size={25} style={{paddingTop: 10}}>
+              <Col></Col>
+              <Col>
+                <Button block onPress={() => this.updateData()}>
+                  <Text>更新数据</Text>
+                </Button>
+              </Col>
+              <Col></Col>
+            </Row>
+          </Grid>
+        </Content>
+        
+        <Footer>
+          <FooterTab>
+            <Button active>
+              <Text>USTD</Text>
+            </Button>
+            <Button onPress={() => this.props.navigation.push('Btc')}>
+              <Text>BTC</Text>
+            </Button>
+          </FooterTab>
+        </Footer>
       </Container>
     )
   }
