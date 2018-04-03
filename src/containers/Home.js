@@ -10,6 +10,7 @@ import {
   Header,
   Body
 } from 'native-base'
+import {ScrollView} from 'react-native'
 import action from '../utils/fetch'
 import {Grid, Col} from 'react-native-easy-grid'
 const PAGE = 6
@@ -27,8 +28,24 @@ export default class Home extends React.Component {
       .bind(this)
   }
   componentWillMount() {
-    this.setState({buyData: [], sellData: [], fetching1: false, fetching2: false})
+    this.setState({buyData: [], sellData: [], fetching1: false, fetching2: false, hbhl: ''})
     // this.fetchData()
+  }
+  getHuobiHuilv() {
+    return axios('https://otc-api.huobipro.com/v1/otc/base/market/price').then(res => {
+      try {
+        res
+          .data
+          .data
+          .forEach(it => {
+            if (it.coinId == 2) {
+              this.setState({hbhl: it.price})
+            }
+          })
+      } catch (e) {
+        console.log(e)
+      }
+    })
   }
   fetchHuobiDataBuy(page = 1, maxPage) {
     this.setState({fetching1: true})
@@ -134,25 +151,29 @@ export default class Home extends React.Component {
           </Body>
         </Header>
         <Grid>
-          <Row size={75}>
-            <Col>
-              {buyList.map((it, index) => {
-                return (
-                  <ListItem key={index}>
-                    <Text>{it.price}({it.data.length})</Text>
-                  </ListItem>
-                )
-              })}
-            </Col>
-            <Col>
-              {sellList.map((it, index) => {
-                return (
-                  <ListItem key={index}>
-                    <Text>{it.price}({it.data.length})</Text>
-                  </ListItem>
-                )
-              })}
-            </Col>
+          <Row size={10}><Text>火币汇率：{this.state.hbhl}</Text></Row>
+          <Row size={65}>
+            <ScrollView>
+              <Col>
+                {buyList.map((it, index) => {
+                  return (
+                    <ListItem key={index}>
+                      <Text>{it.price}({it.data.length})</Text>
+                    </ListItem>
+                  )
+                })}
+              </Col>
+              <Col>
+                {sellList.map((it, index) => {
+                  return (
+                    <ListItem key={index}>
+                      <Text>{it.price}({it.data.length})</Text>
+                    </ListItem>
+                  )
+                })}
+              </Col>
+            </ScrollView>
+
           </Row>
           <Row size={25}>
             <Col></Col>
