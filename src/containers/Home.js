@@ -16,7 +16,8 @@ import {Grid, Col} from 'react-native-easy-grid'
 const PAGE = 6
 const LEVEL = 0.03
 export default class Home extends React.Component {
-  construtor() {
+  constructor() {
+    super()
     this.fetchData = this
       .fetchData
       .bind(this)
@@ -26,16 +27,21 @@ export default class Home extends React.Component {
     this.fetchHuobiDataSell = this
       .fetchHuobiDataSell
       .bind(this)
+    this.state = {
+      buyData: [],
+      sellData: [],
+      fetching1: false,
+      fetching2: false,
+      hbhl: ''
+    }
   }
-  componentWillMount() {
-    this.setState({buyData: [], sellData: [], fetching1: false, fetching2: false, hbhl: ''})
-    // this.fetchData()
-  }
+
   getHuobiHuilv() {
-    return axios('https://otc-api.huobipro.com/v1/otc/base/market/price').then(res => {
+    return action({
+      url: 'https://otc-api.huobipro.com/v1/otc/base/market/price'
+    }).then(res => {
       try {
         res
-          .data
           .data
           .forEach(it => {
             if (it.coinId == 2) {
@@ -111,13 +117,18 @@ export default class Home extends React.Component {
     }
     this.setState({buyData: [], sellData: []})
     this.fetchData()
+    this.getHuobiHuilv()
   }
   render() {
     let buyList = []
     let sellList = []
     let buyListData = {}
     let sellListData = {}
-    const {buyData, sellData} = this.state
+    const {
+      buyData = [],
+      sellData = [],
+      hbhl
+    } = this.state || {}
     buyData.forEach(it => {
       if (buyListData[it.fixedPrice]) {
         buyListData[it.fixedPrice].push(it)
@@ -142,7 +153,6 @@ export default class Home extends React.Component {
       .forEach(it => {
         sellList.push({price: it, data: sellListData[it]})
       })
-    console.log(buyList, sellList)
     return (
       <Container>
         <Header>
@@ -151,28 +161,28 @@ export default class Home extends React.Component {
           </Body>
         </Header>
         <Grid>
-          <Row size={10}><Text>火币汇率：{this.state.hbhl}</Text></Row>
+          <Row size={10}>
+            <Text>火币汇率：{hbhl}</Text>
+          </Row>
           <Row size={65}>
-            <ScrollView>
-              <Col>
-                {buyList.map((it, index) => {
-                  return (
-                    <ListItem key={index}>
-                      <Text>{it.price}({it.data.length})</Text>
-                    </ListItem>
-                  )
-                })}
-              </Col>
-              <Col>
-                {sellList.map((it, index) => {
-                  return (
-                    <ListItem key={index}>
-                      <Text>{it.price}({it.data.length})</Text>
-                    </ListItem>
-                  )
-                })}
-              </Col>
-            </ScrollView>
+            <Col>
+              {buyList.map((it, index) => {
+                return (
+                  <ListItem key={index}>
+                    <Text>{it.price}({it.data.length})</Text>
+                  </ListItem>
+                )
+              })}
+            </Col>
+            <Col>
+              {sellList.map((it, index) => {
+                return (
+                  <ListItem key={index}>
+                    <Text>{it.price}({it.data.length})</Text>
+                  </ListItem>
+                )
+              })}
+            </Col>
 
           </Row>
           <Row size={25}>
