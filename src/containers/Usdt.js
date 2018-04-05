@@ -12,9 +12,10 @@ import {
   Right,
   Footer,
   FooterTab,
-  Content
+  Content,
+  Thumbnail
 } from 'native-base'
-import {ScrollView, StyleSheet} from 'react-native'
+import {ScrollView, StyleSheet, Image} from 'react-native'
 import action from '../utils/fetch'
 import {Grid, Col, Row} from 'react-native-easy-grid'
 const PAGE = 6
@@ -42,10 +43,25 @@ export default class Usdt extends React.Component {
       sellData: [],
       fetching1: false,
       fetching2: false,
-      hbhl: ''
+      hbhl: '',
+      gateio: {
+        buy: '',
+        sell: ''
+      }
     }
   }
-
+  getGateIoPrice() {
+    return action({
+      url: 'https://gate.io/json_svr/query_push/?u=13&type=push_main_rates&symbol=USDT_CNY'
+    }).then(res => {
+      this.setState({
+        gateio: {
+          buy: res.appraised_rates.buy_rate,
+          sell: res.appraised_rates.sell_rate
+        }
+      })
+    })
+  }
   getHuobiHuilv() {
     return action({
       url: 'https://otc-api.huobipro.com/v1/otc/base/market/price'
@@ -128,6 +144,7 @@ export default class Usdt extends React.Component {
     this.setState({buyData: [], sellData: []})
     this.fetchData()
     this.getHuobiHuilv()
+    this.getGateIoPrice()
   }
   render() {
     let buyList = []
@@ -137,7 +154,8 @@ export default class Usdt extends React.Component {
     const {
       buyData = [],
       sellData = [],
-      hbhl
+      hbhl,
+      gateio
     } = this.state || {}
     buyData.forEach(it => {
       if (buyListData[it.fixedPrice]) {
@@ -179,11 +197,26 @@ export default class Usdt extends React.Component {
               justifyContent:'center',
               alignItems:'center',
               paddingTop: 20,
+            }} size={10}>
+              <Text style={{
+                fontSize: 20
+              }}>huobi:{hbhl}</Text>
+            </Row>
+            <Row style={{
+              flexDirection:'column',
+              justifyContent:'center',
+              alignItems:'center',
+              paddingTop: 20,
               paddingBottom: 20
             }} size={10}>
               <Text style={{
                 fontSize: 20
-              }}>火币汇率：{hbhl}</Text>
+              }}>gateio:{gateio.buy}/{gateio.sell}</Text>
+            </Row>
+            <Row>
+              <Col></Col>
+              <Col><Image source={{uri: 'https://w.ratesviewer.com/en/default/blue/usdt/cny'}} style={{height: 40, width: null, flex: 1}}/></Col>
+              <Col></Col>
             </Row>
             <Row size={65}>
               <Col>
@@ -213,7 +246,7 @@ export default class Usdt extends React.Component {
                 })}
               </Col>
             </Row>
-            <Row size={25} style={{paddingTop: 10}}>
+            <Row size={25} style={{paddingTop: 10,paddingBottom: 20}}>
               <Col></Col>
               <Col>
                 <Button block onPress={() => this.updateData()}>
@@ -228,10 +261,16 @@ export default class Usdt extends React.Component {
         <Footer>
           <FooterTab>
             <Button active>
-              <Text>USTD</Text>
+              <Text>USDT</Text>
             </Button>
-            <Button onPress={() => this.props.navigation.push('Btc')}>
+            <Button onPress={() => this.props.navigation.replace('Btc')}>
               <Text>BTC</Text>
+            </Button>
+            <Button onPress={() => this.props.navigation.replace('Eth')} >
+              <Text>ETH</Text>
+            </Button>
+            <Button onPress={() => this.props.navigation.replace('Ltc')}>
+              <Text>LTC</Text>
             </Button>
           </FooterTab>
         </Footer>

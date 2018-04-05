@@ -12,6 +12,8 @@ import {
 import Usdt from './src/containers/Usdt'
 import Btc from './src/containers/Btc'
 import Welcome from './src/containers/Welcome'
+import Eth from './src/containers/Eth'
+import Ltc from './src/containers/Ltc'
 
 
 const StacksOverTabs = StackNavigator({
@@ -25,6 +27,20 @@ const StacksOverTabs = StackNavigator({
   Btc: {
     screen: Btc,
     path: '/btc',
+    navigationOptions: {
+      header: null
+    },
+  },
+  Eth: {
+    screen: Eth,
+    path: '/eth',
+    navigationOptions: {
+      header: null
+    },
+  },
+  Ltc: {
+    screen: Ltc,
+    path: '/ltc',
     navigationOptions: {
       header: null
     },

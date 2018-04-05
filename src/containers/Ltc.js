@@ -50,10 +50,10 @@ export default class Usdt extends React.Component {
     this.setState({
       fetching1: true
     })
-    return action({url: 'https://yobit.net/api/3/depth/btc_usd'}).then(res => {
+    return action({url: 'https://yobit.net/api/3/depth/ltc_usd'}).then(res => {
       let result = []
-      const asks = res.btc_usd.asks
-      const bids = res.btc_usd.bids
+      const asks = res.ltc_usd.asks
+      const bids = res.ltc_usd.bids
       for (let i = 0; i < 10; i++) {
         result.push({
           ask: asks[i][0],
@@ -74,7 +74,7 @@ export default class Usdt extends React.Component {
       fetching2: true
     })
     return action({
-      url: 'https://api.huobipro.com/market/depth?symbol=btcusdt&type=step0'
+      url: 'https://api.huobipro.com/market/depth?symbol=ltcusdt&type=step0'
     }).then(res => {
       let result = []
       const asks = res.tick.asks
@@ -107,7 +107,7 @@ export default class Usdt extends React.Component {
         <Header>
           <Left/>
           <Body>
-            <Title>BTC</Title>
+            <Title>LTC</Title>
           </Body>
           <Right />
         </Header>
@@ -187,17 +187,17 @@ export default class Usdt extends React.Component {
           </Grid>
         </Content>
         <Footer>
-        <FooterTab>
-            <Button onPress={() => this.props.navigation.replace('Usdt')}>
+          <FooterTab>
+            <Button  onPress={() => this.props.navigation.replace('Usdt')}>
               <Text>USDT</Text>
             </Button>
-            <Button active >
+            <Button onPress={() => this.props.navigation.replace('Btc')}>
               <Text>BTC</Text>
             </Button>
             <Button onPress={() => this.props.navigation.replace('Eth')} >
               <Text>ETH</Text>
             </Button>
-            <Button onPress={() => this.props.navigation.replace('Ltc')}>
+            <Button active >
               <Text>LTC</Text>
             </Button>
           </FooterTab>
