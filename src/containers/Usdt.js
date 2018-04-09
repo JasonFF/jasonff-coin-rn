@@ -21,6 +21,9 @@ import {Grid, Col, Row} from 'react-native-easy-grid'
 import jsonp from 'jsonp'
 const PAGE = 6
 const LEVEL = 0.01
+function getFixed(val) {
+  return val.toFixed(3)
+}
 
 const styles = StyleSheet.create({
   textCenter: {
@@ -194,6 +197,15 @@ export default class Usdt extends React.Component {
       .forEach(it => {
         sellList.push({price: it, data: sellListData[it]})
       })
+
+      const price = buyList&&buyList[0]&&buyList[0].price
+      let yijia = ""
+      let yijiaPer = ''
+      
+      if (price && usdHuilv) {
+        yijia = getFixed(price - usdHuilv)
+        yijiaPer = getFixed(yijia/usdHuilv*100)
+      }
     return (
       <Container>
         <Header>
@@ -236,7 +248,10 @@ export default class Usdt extends React.Component {
             </Row>
             <Row>
               <Col></Col>
-              <Col><Image source={{uri: 'https://w.ratesviewer.com/en/default/blue/usdt/cny'}} style={{height: 40, width: null, flex: 1}}/></Col>
+              <Col><Text>
+              溢价{yijia}/{yijiaPer}%
+                
+                </Text></Col>
               <Col></Col>
             </Row>
             <Row size={65}>
