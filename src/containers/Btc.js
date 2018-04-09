@@ -105,11 +105,9 @@ export default class Usdt extends React.Component {
     return (
       <Container>
         <Header>
-          <Left/>
           <Body>
             <Title>BTC</Title>
           </Body>
-          <Right />
         </Header>
         <Content>
         <Grid>

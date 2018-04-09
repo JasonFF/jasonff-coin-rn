@@ -18,8 +18,9 @@ import {
 import {ScrollView, StyleSheet, Image} from 'react-native'
 import action from '../utils/fetch'
 import {Grid, Col, Row} from 'react-native-easy-grid'
+import jsonp from 'jsonp'
 const PAGE = 6
-const LEVEL = 0.03
+const LEVEL = 0.01
 
 const styles = StyleSheet.create({
   textCenter: {
@@ -47,8 +48,18 @@ export default class Usdt extends React.Component {
       gateio: {
         buy: '',
         sell: ''
-      }
+      },
+      usdHuilv: ''
     }
+  }
+  getUsdCny() {
+    fetch("http://api.money.126.net/data/feed/FX_USDCNY").then(res => res.text()).then(res => {
+      let str = res.replace('_ntes_quote_callback(', '').replace(/\)\;$/, '')
+      const obj = JSON.parse(str)
+      this.setState({
+        usdHuilv: obj.FX_USDCNY.price
+      })
+    })
   }
   getGateIoPrice() {
     return action({
@@ -145,6 +156,7 @@ export default class Usdt extends React.Component {
     this.fetchData()
     this.getHuobiHuilv()
     this.getGateIoPrice()
+    this.getUsdCny()
   }
   render() {
     let buyList = []
@@ -155,7 +167,8 @@ export default class Usdt extends React.Component {
       buyData = [],
       sellData = [],
       hbhl,
-      gateio
+      gateio,
+      usdHuilv
     } = this.state || {}
     buyData.forEach(it => {
       if (buyListData[it.fixedPrice]) {
@@ -184,11 +197,9 @@ export default class Usdt extends React.Component {
     return (
       <Container>
         <Header>
-          <Left/>
           <Body>
             <Title >USDT</Title>
           </Body>
-          <Right />
         </Header>
         <Content>
           <Grid>
@@ -201,6 +212,16 @@ export default class Usdt extends React.Component {
               <Text style={{
                 fontSize: 20
               }}>huobi:{hbhl}</Text>
+            </Row>
+            <Row style={{
+              flexDirection:'column',
+              justifyContent:'center',
+              alignItems:'center',
+              paddingTop: 20
+            }} size={10}>
+              <Text style={{
+                fontSize: 20
+              }}>人民币汇率:{usdHuilv}</Text>
             </Row>
             <Row style={{
               flexDirection:'column',

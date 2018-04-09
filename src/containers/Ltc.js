@@ -105,11 +105,9 @@ export default class Usdt extends React.Component {
     return (
       <Container>
         <Header>
-          <Left/>
           <Body>
             <Title>LTC</Title>
           </Body>
-          <Right />
         </Header>
         <Content>
         <Grid>
